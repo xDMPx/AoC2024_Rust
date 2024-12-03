@@ -21,3 +21,28 @@ fn extract_mul_nums(split: &str) -> Option<(usize, usize)> {
 
     Some((lnum, rnum))
 }
+
+pub fn part02(file_path: &str) -> usize {
+    let memory: String = std::fs::read_to_string(file_path).unwrap();
+
+    let mut splits = memory.split("mul(");
+    let mut do_mul = !splits.next().unwrap().contains("don't()");
+
+    let mulres = splits.map(|s| {
+        let mut mul = 0;
+        if do_mul {
+            if let Some((lnum, rnum)) = extract_mul_nums(s) {
+                mul = lnum * rnum;
+            }
+        }
+        if s.contains("don't()") {
+            do_mul = false;
+        }
+        if s.contains("do()") {
+            do_mul = true;
+        }
+        mul
+    });
+
+    mulres.sum()
+}
