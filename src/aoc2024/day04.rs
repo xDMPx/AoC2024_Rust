@@ -83,3 +83,52 @@ fn get_valid_neighbor(
 
     return None;
 }
+
+pub fn part02(file_path: &str) -> usize {
+    let word_search: Vec<Vec<char>> = std::fs::read_to_string(file_path)
+        .unwrap()
+        .lines()
+        .map(|l| l.chars().collect())
+        .collect();
+
+    let mut xmas_count = 0;
+    for (y, line) in word_search.iter().enumerate() {
+        for (x, c) in line.iter().enumerate() {
+            if *c == 'A' {
+                let a = get_adjacent_coords_2(&word_search, (x, y));
+                if a.len() != 4 {
+                    continue;
+                }
+                if !((word_search[a[0].1][a[0].0] == 'S' && word_search[a[1].1][a[1].0] == 'M')
+                    || (word_search[a[0].1][a[0].0] == 'M' && word_search[a[1].1][a[1].0] == 'S'))
+                {
+                    continue;
+                }
+                if (word_search[a[2].1][a[2].0] == 'S' && word_search[a[3].1][a[3].0] == 'M')
+                    || (word_search[a[2].1][a[2].0] == 'M' && word_search[a[3].1][a[3].0] == 'S')
+                {
+                    xmas_count += 1;
+                }
+            }
+        }
+    }
+
+    xmas_count
+}
+
+fn get_adjacent_coords_2(
+    word_search: &Vec<Vec<char>>,
+    (x, y): (usize, usize),
+) -> Vec<(usize, usize)> {
+    let directions = [(-1, -1), (1, 1), (1, -1), (-1, 1)];
+
+    let mut adjacent_coords = Vec::new();
+
+    for (dx, dy) in &directions {
+        if let Some((x, y)) = get_valid_neighbor(word_search, (x, y), (*dx, *dy)) {
+            adjacent_coords.push((x, y));
+        }
+    }
+
+    adjacent_coords
+}
