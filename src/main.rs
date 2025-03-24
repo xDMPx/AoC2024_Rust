@@ -42,4 +42,8 @@ fn main() {
     println!("\t\tpart 1: {day07_part1}");
     let day07_part2 = aoc2024::day07::part02("./puzzle_input/day07.txt");
     println!("\t\tpart 2: {day07_part2}");
+
+    println!("\tDay 08: ");
+    let day08_part1 = aoc2024::day08::part01("./puzzle_input/day08.txt");
+    println!("\t\tpart 1: {day08_part1}");
 }
