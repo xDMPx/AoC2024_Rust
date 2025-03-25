@@ -84,3 +84,80 @@ pub fn part01(file_path: &str) -> usize {
 
     sum
 }
+
+pub fn part02(file_path: &str) -> usize {
+    let puzzle_input: String = std::fs::read_to_string(file_path).unwrap();
+    let disk_map: Vec<usize> = puzzle_input
+        .trim()
+        .chars()
+        .map(|c| c.to_digit(10).unwrap().try_into().unwrap())
+        .collect();
+
+    let mut free = false;
+    let mut id = 0;
+    let mut files = vec![];
+    let mut empty_spaces = vec![];
+    let mut i = 0;
+    for x in disk_map {
+        if x == 0 {
+            free = !free;
+            continue;
+        }
+        if free {
+            empty_spaces.push(DiskSpace {
+                id: None,
+                pos: (i, i + x - 1),
+            });
+        } else {
+            files.push(DiskSpace {
+                id: Some(id),
+                pos: (i, i + x - 1),
+            });
+            id += 1;
+        }
+        free = !free;
+        i = i + x;
+    }
+
+    let mut new_files = vec![];
+    while let Some(mut file) = files.pop() {
+        let file_len = file.pos.1 - file.pos.0 + 1;
+
+        let space = empty_spaces
+            .iter()
+            .enumerate()
+            .filter(|(_, s)| (s.pos.1 - s.pos.0 + 1) >= file_len && s.pos.0 < file.pos.0)
+            .min_by_key(|(_, s)| s.pos.1);
+
+        if let Some((i, space)) = space {
+            let mut space = *space;
+            empty_spaces.push(DiskSpace {
+                id: None,
+                pos: file.pos,
+            });
+            let space_len = space.pos.1 - space.pos.0 + 1;
+            if space_len == file_len {
+                file.pos = space.pos;
+            } else {
+                file.pos.0 = space.pos.0;
+                file.pos.1 = space.pos.0 + file_len - 1;
+                space.pos.0 = space.pos.0 + file_len;
+                empty_spaces.push(space);
+            }
+            new_files.push(file);
+            empty_spaces.remove(i);
+        } else {
+            new_files.push(file);
+        }
+    }
+
+    files.append(&mut new_files);
+    let mut sum = 0;
+    for f in files {
+        for i in f.pos.0..=f.pos.1 {
+            sum += i * f.id.unwrap();
+        }
+    }
+
+    sum
+}
