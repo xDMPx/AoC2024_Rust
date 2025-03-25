@@ -45,5 +45,8 @@ mod tests {
         assert_eq!(day08_part1, 14);
         let day08_part2 = aoc2024::day08::part02("./test_puzzle_input/day08_test.txt");
         assert_eq!(day08_part2, 34);
+
+        let day09_part1 = aoc2024::day09::part01("./test_puzzle_input/day09_test.txt");
+        assert_eq!(day09_part1, 1928);
     }
 }
