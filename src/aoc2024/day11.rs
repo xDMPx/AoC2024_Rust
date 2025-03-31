@@ -1,4 +1,12 @@
 pub fn part01(file_path: &str) -> usize {
+    simulate(file_path, 25)
+}
+
+pub fn part02(file_path: &str) -> usize {
+    simulate(file_path, 75)
+}
+
+fn simulate(file_path: &str, blinks: usize) -> usize {
     let puzzle_input: String = std::fs::read_to_string(file_path).unwrap();
     let mut state = std::collections::HashMap::<usize, usize>::from_iter(
         puzzle_input
@@ -7,7 +15,7 @@ pub fn part01(file_path: &str) -> usize {
             .map(|s| (s.parse().unwrap(), 1)),
     );
 
-    for _ in 0..25 {
+    for _ in 0..blinks {
         let mut new_state = std::collections::HashMap::new();
         let stones: Vec<usize> = state.keys().map(|x| *x).collect();
         for stone_num in stones {
